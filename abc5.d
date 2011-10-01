@@ -1,3 +1,5 @@
+//#!rdmd
+
 /* To Dos:
  * More work on input.d [ ]
  * Add resize and save photos that are too big to fit in the display [ ]

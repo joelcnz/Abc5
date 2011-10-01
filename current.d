@@ -8,6 +8,7 @@ import std.stdio;
 import std.string;
 import std.traits: EnumMembers; // for foreach enums
 import std.math;
+import std.random;
 
 import jeca.all;
 
@@ -64,15 +65,25 @@ private:
 			if ( ! doShowPicture )
 				_picture = noPicture;
 
-			if ( _strInput != g_emptyText )
+			if ( _strInput != g_emptyText ) {
+				auto noMedia = true;
 				foreach( m; _media ) {
 					auto inputNameMatch = _strInput.toLower == m.text.stringText.toLower;
 					if ( inputNameMatch ) {
+						noMedia = false;
 						m.tell;
 						if ( isAPicture( m.picture ) )
 							_picture = m.picture;
-					}
+					}	
 				}
+				if ( noMedia && _strInput.length > 0 ) {
+					IMedia m;
+					do {
+						m = _media[ uniform( 0, _media.length ) ];
+					} while( ! isAPicture( m.picture ) );
+					_picture = m.picture;
+				}
+			}
 		}
 	}
 	

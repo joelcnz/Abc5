@@ -57,6 +57,25 @@ public:
 			else
 				writeln( fileName, " - not exist! - Get hold of your vendor at once!" );
 		}
+		
+		foreach( number; 0 .. 9 + 1 ) {
+			auto fileName = g_voicesFolder ~ sep ~ to!string( number ) ~ ".wav";
+
+			auto otherFileName = fileName[ 0 .. $ - 4 ] ~ ".ogg";
+			
+			if ( ! exists( fileName ) && exists( otherFileName ) )
+				fileName = otherFileName;
+
+			if ( exists( fileName ) ) {
+				_nsnds[ number ] = new Snd( fileName );
+				if ( _nsnds[ number ] is null ) {
+					writeln( fileName, " - not load! - Get hold of your vendor at once!" );
+					_nsnds[ number ] = blowSnd; // default sound
+				}
+			}
+			else
+				writeln( fileName, " - not exist! - Get hold of your vendor at once!" );
+		}
 	}
 
 	/**
@@ -93,6 +112,7 @@ public:
 private:
 	Key[ ALLEGRO_KEY_MAX + 1 ] _keys;
 	Snd[ g_numberOfLettersInTheAphabet ] _lsnds;
+	Snd[ 10 ] _nsnds;
 	IText _text;
 	immutable
 		keysStart = 0,
@@ -124,6 +144,7 @@ private:
 	string doNumbers( int keyId, ref string text, ref bool doShowRefWords, ref bool doShowPicture  ) {
 		if ( keyId >= ALLEGRO_KEY_0 && keyId <= ALLEGRO_KEY_9 )
 			if ( _keys[ keyId ].keyHit ) {
+				_nsnds[ keyId - ALLEGRO_KEY_0 ].play;
 				text ~= '0' + ( keyId - ALLEGRO_KEY_0 ) & 0xFF;
 			}
 		return g_emptyText;
